@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Read Solomon Code ES module</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="ReadSolomonES.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Eeed Solomon Code ES Module</h1>
+        <div class="encoder selected" id="encoder-body">
+            <h1>tset input</h1>
+            <div>
+                <span>text input</span>
+                <textarea id="encode-input"></textarea>
+            </div>
+
+            <h2>config</h2>
+            <div>
+                <label for="bit-num">Bit Num r: <span data-val></span> bit</label>
+                <input id="bit-num" type="range" value="8" min="4" , max="16" , step="2">
+            </div>
+            <div>
+
+                <label for="error-correct-reduntant-retio">Error Collect Reduntant Retio Parcentage: <span
+                        data-val></span> %</label>
+                <input id="error-correct-reduntant-retio" type="range" value="100" min="0" , max="100" , step="10">
+            </div>
+
+            <div>
+                <span>encode-result</span>
+                <textarea id="encode-result"></textarea>
+            </div>
+            <div>
+                <span>encode-result to </span>
+                <button id="encoded-copy">copy</button>
+            </div>
+            <div>
+                <label for="noise-level">Error Collect Redunrant Retio Parcentage: <span data-val></span> %</label>
+                <input id="noise-level" type="range" value="100" min="0" , max="100" , step="1">
+            </div>
+            <div>
+                <span>decode-input</span>
+                <textarea id="decode-input"></textarea>
+            </div>
+            <div>
+                <span>decode-result</span>
+                <textarea id="decode-result"></textarea>
+            </div>
+            <div>
+                <button id="test">test</button>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="./util/V.js"></script>
+    <script type="module" src="./util/B64Util.js"></script>
+    <script type="module" src="./ReedSolomon.js"></script>
+    <script type="module" src="./index.js"></script>
+</body>
+
+</html>

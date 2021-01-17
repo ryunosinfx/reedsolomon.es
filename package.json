@@ -1,0 +1,28 @@
+{
+  "name": "reedsolomon.es",
+  "version": "1.0.0",
+  "description": "This is Reed-Solomon coding module which is porting from Zxing open source project written in Java.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryunosinfx/reedsolomon.es.git"
+  },
+  "keywords": [
+    "reedsolomon"
+  ],
+  "author": "ryunosinfx2 <ryunosinfxxul@gmail.com> (https://github.com/ryunosinfx)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/ryunosinfx/reedsolomon.es/issues"
+  },
+  "homepage": "https://github.com/ryunosinfx/reedsolomon.es#readme",
+  "devDependencies": {
+    "webpack": "^5.13.0",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.1",
+    "webpack-server": "^0.1.2"
+  }
+}
