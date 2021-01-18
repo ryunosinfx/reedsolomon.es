@@ -19,9 +19,10 @@ https://ryunosinfx.github.io/reedsolomon.es/index.html
   const presetName = 'ByteAs8bit';
   
   // K = planeUint8array.length
-  const planeUint8array =n ew Uint8Array([xxxxxxxxxxxxxxxxxxxxxxxxxx]);
+  const planeUint8array = new Uint8Array([xxxxxxxxxxxxxxxxxxxxxxxxxx]);
   
-  const encordedUint8Array = ReedSolomonES.encode(planeUint8array, presetName, errorCrrectionReduntantRetio);
+  const encordedUint8Array 
+    = ReedSolomonES.encode(planeUint8array, presetName, errorCrrectionReduntantRetio);
       
 </script>
 ```
@@ -40,11 +41,15 @@ https://ryunosinfx.github.io/reedsolomon.es/index.html
   const encordedUint8Array = new Uint8Array([yyyyyyyyyyyyyyyyyyyyyyy]); 
    
   
-  //Best effort:if errors are correctable,they are corrected.But errors are not correctable,they are outputed.
-  const decodedUint8Array = ReedSolomonES.decode(encordedUint8Array, presetName, errorCrrectionReduntantRetio);
+  // Best effort mode:if errors are correctable,they are corrected.
+  // But errors are not correctable,they are outputed.
+  const decodedUint8Array 
+    = ReedSolomonES.decode(encordedUint8Array, presetName, errorCrrectionReduntantRetio);
   
-  //Strict mode:if errors are correctable,they are corrected.But errors are not correctable,throw ReedSolomonException.
-  const correctedUint8Array = ReedSolomonES.decodeStrict(encordedUint8Array, presetName, errorCrrectionReduntantRetio);
+  // Strict mode:if errors are correctable,they are corrected.
+  // But errors are not correctable,throw ReedSolomonException.
+  const correctedUint8Array 
+    = ReedSolomonES.decodeStrict(encordedUint8Array, presetName, errorCrrectionReduntantRetio);
 
 </script>
 ```
