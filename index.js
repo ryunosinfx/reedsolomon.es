@@ -55,7 +55,7 @@ class Main {
 				for (let i = 0; i < len; i++) {
 					matchCount = matchCount + (u8aE[i] === u8a[i] ? 1 : 0);
 				}
-				copyErrorRateElm.textContent = `${100 - Math.round((matchCount / len) * 10000) / 100}% diff:${len - matchCount}`;
+				copyErrorRateElm.textContent = `${100 - Math.ceil((matchCount / len) * 10000) / 100}% diff:${len - matchCount}`;
 			} catch (e) {
 				console.error(e);
 			}
@@ -66,9 +66,19 @@ class Main {
 			const nl = noiseLevelElm.value / 300;
 			const u8a = B64Util.b64ToU8a(b64);
 			const len = u8a.length;
-			for (let i = 0; i < len; i++) {
-				if (Math.random() < nl) {
+			const errCount = Math.ceil(len * nl);
+			let ec = 0;
+			let lastErrored = false;
+			for (let i = len - 1; i >= 0; i--) {
+				if (lastErrored ? Math.random() < nl : Math.random() < nl) {
+					lastErrored = true;
 					u8a[i] = Math.floor(Math.random() * 255);
+					ec++;
+				} else {
+					lastErrored = false;
+				}
+				if (ec >= errCount) {
+					break;
 				}
 			}
 			const b642 = B64Util.u8a2b64(u8a);
@@ -164,7 +174,7 @@ class Main {
         　勇者は、ひどく赤面した。
         （古伝説と、シルレルの詩から。）
         `;
-		const bits = [4, 6, 8, 10, 12];
+		const bits = [8, 10, 12];
 		const u8a = B64Util.s2u8a(text);
 		const s = B64Util.u8aToUtf8(u8a);
 		console.log(u8a);
