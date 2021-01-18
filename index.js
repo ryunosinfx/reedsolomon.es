@@ -4,6 +4,7 @@ import { ReedSolomonES } from './ReedSolomon.js';
 class Main {
 	constructor() {
 		const encodeInpueElm = V.gid('encode-input');
+		const byteLengthElm = V.gid('byte-length');
 		const bitNumElm = V.gid('bit-num');
 		const ecrResioElm = V.gid('error-correct-reduntant-retio');
 		const encodeResultElm = V.gid('encode-result');
@@ -11,6 +12,8 @@ class Main {
 		const noiseLevelElm = V.gid('noise-level');
 		const decodeInputElm = V.gid('decode-input');
 		const decodeResultElm = V.gid('decode-result');
+		const decodeIsValidElm = V.gid('decode-is-valid');
+		const copyErrorRateElm = V.gid('copy-error-rate');
 		const encodeFunc = () => {
 			const input = encodeInpueElm.value;
 			const u8a = B64Util.s2u8a(input);
@@ -19,6 +22,7 @@ class Main {
 			const presetName = 'ByteAs' + bitNum + 'bit';
 			try {
 				const encorded = ReedSolomonES.encode(u8a, presetName, ecrRetio);
+				byteLengthElm.textContent = `${u8a.length}bytes/${encorded.length}bytes`;
 				const b64 = B64Util.u8a2b64(encorded);
 				encodeResultElm.value = b64;
 			} catch (e) {
@@ -30,6 +34,9 @@ class Main {
 		V.ael(ecrResioElm, 'change', encodeFunc);
 		V.ael(bitNumElm, 'change', encodeFunc);
 		const decodeFunc = () => {
+			const inputMaster = encodeInpueElm.value;
+			const encodeMaster = encodeResultElm.value;
+			const u8aE = B64Util.b64ToU8a(encodeMaster);
 			const input = decodeInputElm.value;
 			const u8a = B64Util.b64ToU8a(input);
 			const bitNum = bitNumElm.value;
@@ -38,6 +45,17 @@ class Main {
 			try {
 				const decorded = ReedSolomonES.decode(u8a, presetName, ecrRetio);
 				decodeResultElm.value = B64Util.u8aToUtf8(decorded);
+				if (decodeResultElm.value.indexOf(inputMaster) === 0) {
+					decodeIsValidElm.textContent = 'IS VALID ENCODE AND DECODED!';
+				} else {
+					decodeIsValidElm.textContent = 'IS INVALID !';
+				}
+				const len = u8a.length;
+				let matchCount = 0;
+				for (let i = 0; i < len; i++) {
+					matchCount = matchCount + (u8aE[i] === u8a[i] ? 1 : 0);
+				}
+				copyErrorRateElm.textContent = `${100 - Math.round((matchCount / len) * 10000) / 100}% diff:${len - matchCount}`;
 			} catch (e) {
 				console.error(e);
 			}
@@ -159,11 +177,14 @@ class Main {
 			console.log('bitNum:' + bitNum + '/s:' + s);
 			const presetName = 'ByteAs' + bitNum + 'bit';
 			const ecrRetio = 100 / 100;
-
-			const encorded = ReedSolomonES.encode(u8a, presetName, ecrRetio);
-			const decorded = ReedSolomonES.decode(encorded, presetName, ecrRetio);
-			const value = B64Util.u8aToUtf8(decorded);
-			console.log(text === value);
+			try {
+				const encorded = ReedSolomonES.encode(u8a, presetName, ecrRetio);
+				const decorded = ReedSolomonES.decode(encorded, presetName, ecrRetio);
+				const value = B64Util.u8aToUtf8(decorded);
+				console.log(text === value);
+			} catch (e) {
+				console.error(e);
+			}
 		}
 	}
 }

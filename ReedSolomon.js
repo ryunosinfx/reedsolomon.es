@@ -109,7 +109,7 @@ class GenericGF {
 		if (a === 0) {
 			throw new ReedSolomonException();
 		}
-		console.log(this.logTable);
+		// console.log(this.logTable);
 		return this.logTable[a];
 	}
 
@@ -220,8 +220,8 @@ class GenericGFPoly {
 	 * @return coefficient of x^degree term in this polynomial
 	 */
 	getCoefficient(degree) {
-		console.log('getCoefficient this.coefficients degree:' + degree);
-		console.log(this.coefficients);
+		// console.log('getCoefficient this.coefficients degree:' + degree);
+		// console.log(this.coefficients);
 		return this.coefficients[this.coefficients.length - 1 - degree];
 	}
 
@@ -275,11 +275,11 @@ class GenericGFPoly {
 		// Copy high-order terms only found in higher-degree polynomial's coefficients
 		sumDiff.set(largerCoefficients.slice(0, lengthDiff), 0);
 		// System.arraycopy(largerCoefficients, 0, sumDiff, 0, lengthDiff);
-		console.log('lengthDiff:' + lengthDiff + '/sumDiff:' + JSON.stringify(sumDiff));
+		// console.log('lengthDiff:' + lengthDiff + '/sumDiff:' + JSON.stringify(sumDiff));
 		for (let i = lengthDiff; i < lenLarge; i++) {
 			sumDiff[i] = GenericGF.addOrSubtract(smallerCoefficients[i - lengthDiff], largerCoefficients[i]);
 		}
-		console.log(sumDiff);
+		// console.log(sumDiff);
 		return new GenericGFPoly(field, sumDiff);
 	}
 
@@ -473,9 +473,7 @@ class ReedSolomonDecoder {
 			return received.slice(0, len - twoS);
 		}
 		const syndrome = new GenericGFPoly(field, syndromeCoefficients);
-		const sigmaOmega = this.runEuclideanAlgorithm(field.buildMonomial(twoS, 1), syndrome, twoS);
-		const sigma = sigmaOmega[0];
-		const omega = sigmaOmega[1];
+		const [sigma, omega] = this.runEuclideanAlgorithm(field.buildMonomial(twoS, 1), syndrome, twoS);
 		const errorLocations = this.findErrorLocations(sigma);
 		// console.log('decode errorLocations sigma:' + sigma);
 		// console.log(errorLocations);
@@ -484,7 +482,7 @@ class ReedSolomonDecoder {
 			const errorLocation = errorLocations[i];
 			const log = field.log(errorLocation);
 			const position = len - 1 - log;
-			console.log('errorLocation:' + errorLocation + '/log:' + log + '/position:' + position);
+			// console.log('errorLocation:' + errorLocation + '/log:' + log + '/position:' + position);
 			if (position < 0) {
 				if (this.isSloppy) {
 					continue;
@@ -538,6 +536,10 @@ class ReedSolomonDecoder {
 		}
 		const sigmaTildeAtZero = t.getCoefficient(0);
 		if (sigmaTildeAtZero === 0) {
+			console.log('runEuclideanAlgorithm a b R t sigmaTildeAtZero:' + sigmaTildeAtZero);
+			console.log(a);
+			console.log(b);
+			console.log(R);
 			console.log(t);
 			throw new ReedSolomonException('sigmaTilde(0) was zero');
 		}
@@ -553,13 +555,13 @@ class ReedSolomonDecoder {
 		const numErrors = errorLocator.getDegree();
 		if (numErrors === 1) {
 			// shortcut
-			console.log('findErrorLocations errorLocator.getCoefficient(1):' + errorLocator.getCoefficient(1) + '/numErrors:' + numErrors);
+			// console.log('findErrorLocations errorLocator.getCoefficient(1):' + errorLocator.getCoefficient(1) + '/numErrors:' + numErrors);
 			return new Int32Array([errorLocator.getCoefficient(1)]);
 		}
 		const result = new Int32Array(numErrors);
 		let e = 0;
 		const size = field.getSize();
-		console.log('findErrorLocations size:' + size + '/numErrors:' + numErrors);
+		// console.log('findErrorLocations size:' + size + '/numErrors:' + numErrors);
 		for (let i = 1; i < size && e < numErrors; i++) {
 			if (errorLocator.evaluateAt(i) === 0) {
 				result[e] = field.inverse(i);
@@ -570,7 +572,7 @@ class ReedSolomonDecoder {
 			throw new ReedSolomonException('Error locator degree does not match number of roots');
 		}
 
-		console.log(result);
+		// console.log(result);
 		return result.slice(0, e);
 	}
 
@@ -641,7 +643,7 @@ class ReedSolomonEncoder {
 		const size = toEncode.length;
 		let dataBytes = size - ecBytes;
 		if (dataBytes <= 0) {
-			console.log('size:' + size + '/ecBytes:' + ecBytes);
+			// console.log('size:' + size + '/ecBytes:' + ecBytes);
 			throw new ReedSolomonException('No data bytes provided');
 		}
 		const generator = this.buildGenerator(ecBytes);
@@ -770,17 +772,23 @@ export class ReedSolomonES {
 		}
 		return u8a;
 	}
-	static copyToI32a(u8a, bitNum) {
+	static copyToI32a(u8a, bitNum, isFillBit = true) {
 		const dataLen = u8a.length;
 		let lastOne = '';
-		const newDataLength = Math.ceil((dataLen * 8) / bitNum);
-		// const has = (dataLen * 8) % bitNum;
+		let lcm = bitNum;
+		const bitnumHarf = bitNum / 2;
+		let add = 0;
+		if (isFillBit && bitNum !== 8) {
+			const mod = dataLen % bitnumHarf;
+			add = mod > 0 ? bitnumHarf - mod : mod;
+		}
+		// console.log('lcm:' + lcm + '/add:' + add + '/' + bitnumHarf);
+		const newDataLength = Math.ceil(((dataLen + add) * 8) / bitNum);
 		const i32a = new Int32Array(newDataLength);
 		const fill = new Array(8);
 		fill.fill('0');
 		const fill0 = fill.join('');
 		let charCounter = 0;
-		// const a = [];
 		for (let octet of u8a) {
 			const bits = (fill0 + octet.toString(2)).slice(-8);
 			const current = lastOne + bits;
@@ -788,17 +796,19 @@ export class ReedSolomonES {
 			for (let i = 0; i < loopCount; i++) {
 				const bitStr = current.substring(i * bitNum, (i + 1) * bitNum);
 				i32a[charCounter] = parseInt(bitStr, 2);
-				// a.push(bitStr);
 				charCounter++;
 			}
 			lastOne = current.substring(loopCount * bitNum);
 		}
-		// console.log(a);
-		if (!lastOne) {
+		// console.log('lastOne:' + lastOne + '/newDataLength:' + newDataLength + '/bitNum:' + bitNum + '/dataLen:' + dataLen);
+		if (lastOne) {
 			const a = new Array(bitNum - lastOne.length);
 			a.fill('0');
-			i32a[charCounter] = parseInt(lastOne + a.join(''), 2);
+			const bits = lastOne + a.join('');
+			// console.log('bits:' + bits);
+			i32a[charCounter] = parseInt(bits, 2);
 		}
+		// console.log(i32a);
 		return i32a;
 	}
 	//2^{r}>N>K>0 ,t=(N-K)/2
@@ -810,7 +820,7 @@ export class ReedSolomonES {
 		const bitNum = preset.bitNum;
 		const primitive = preset.primitive;
 		const b = preset.b;
-		const i32a = ReedSolomonES.copyToI32a(u8a, bitNum);
+		const i32a = ReedSolomonES.copyToI32a(u8a, bitNum, true);
 		const newDataLength = i32a.length;
 
 		const maxWordLength = Math.pow(2, bitNum);
@@ -819,10 +829,10 @@ export class ReedSolomonES {
 		const wordCount = Math.ceil(N / maxWordLength);
 
 		const wordKtmp = Math.floor(maxWordLength / retio);
-		const wordK = Math.ceil(wordKtmp > newDataLength ? newDataLength : wordKtmp) / wordCount;
+		const wordK = Math.ceil((wordKtmp > newDataLength ? wordKtmp : newDataLength) / wordCount);
 		const result = new Int32Array(newDataLength * retio);
 		let leftLength = newDataLength;
-		console.log(newDataLength + '/' + errorCorrectionRetio + retio);
+		// console.log(newDataLength + '/' + errorCorrectionRetio + '/retio:' + retio + '/wordK:' + wordK + '/wordCount:' + wordCount);
 		for (let i = 0; i < wordCount; i++) {
 			const wordKCurrent = leftLength > wordK ? wordK : leftLength;
 			const errorCorrectionRedundantUnitCount = Math.floor(wordKCurrent * errorCorrectionRetio * 2);
@@ -837,13 +847,12 @@ export class ReedSolomonES {
 			// console.log(toEncode);
 			const encorded = ReedSolomonES.encodeRaw(toEncode, errorCorrectionRedundantUnitCount, primitive, bitNum, b);
 			const offset = tempN * i;
-			// console.log('encorded offset:' + offset);
-
-			// console.log(encorded);
 			result.set(encorded, offset);
+			// console.log('encorded offset:' + offset);
+			// console.log(encorded);
 			// console.log(result);
 		}
-		console.log('encode presetName:' + presetName + '/preset:' + JSON.stringify(preset));
+		// console.log('encode presetName:' + presetName + '/preset:' + JSON.stringify(preset));
 		return ReedSolomonES.copyToU8a(result, bitNum);
 	}
 	static decode(u8a, presetName, errorCorrectionRetio, isSloppy) {
@@ -863,7 +872,7 @@ export class ReedSolomonES {
 		const wordCount = Math.ceil(newDataLength / maxWordLength);
 
 		const wordKtmp = Math.floor(maxWordLength / retio);
-		const wordK = Math.ceil((wordKtmp > newDataLength ? K : wordKtmp) / wordCount);
+		const wordK = Math.ceil((wordKtmp > K ? wordKtmp : K) / wordCount);
 		const result = new Int32Array(K);
 		let leftLength = K;
 		for (let i = 0; i < wordCount; i++) {

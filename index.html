@@ -16,7 +16,11 @@
             <h1>tset input</h1>
             <div>
                 <span>text input</span>
-                <textarea id="encode-input"></textarea>
+                <textarea id="encode-input">仏説摩訶般若波羅蜜多心経
+観自在菩薩行深般若波羅蜜多時照見五蘊皆空度一切苦厄舎利子色不異空空不異色色即是空空即是色受想行識亦復如是舎利子是諸法空相不生不滅不垢不浄不増不減是故空中無色無受想行識無眼耳鼻舌身意、無色声香味触法無眼界乃至無意識界無無明亦無無明尽乃至無老死亦無老死尽無苦集滅道無智亦無得以無所得故菩提薩埵依般若波羅蜜多故心無罣礙無罣礙故無有恐怖遠離一切[注 6]顛倒夢想究竟涅槃三世諸仏依般若波羅蜜多故得阿耨多羅三藐三菩提故知般若波羅蜜多是大神呪是大明呪是無上呪是無等等呪能除一切苦真実不虚故説般若波羅蜜多呪
+即説呪曰羯諦羯諦波羅羯諦波羅僧羯諦菩提薩婆訶
+般若心経 </textarea>
+                <span id="byte-length">0</span>
             </div>
 
             <h2>config</h2>
@@ -41,7 +45,7 @@
             </div>
             <div>
                 <label for="noise-level">Error Collect Redunrant Retio Parcentage: <span data-val></span> %</label>
-                <input id="noise-level" type="range" value="100" min="0" , max="100" , step="1">
+                <input id="noise-level" type="range" value="1" min="0" , max="10" , step="0.1">
             </div>
             <div>
                 <span>decode-input</span>
@@ -49,9 +53,13 @@
             </div>
             <div>
                 <span>decode-result</span>
+                <span id="decode-is-valid"></span>
+                <span id="copy-error-rate"></span>
                 <textarea id="decode-result"></textarea>
             </div>
             <div>
+                <h1> unit test</h1>>
+                open F12
                 <button id="test">test</button>
             </div>
         </div>
