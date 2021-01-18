@@ -167,7 +167,7 @@ class GenericGFPoly {
 	 */
 	constructor(field, coefficients) {
 		if (coefficients.length === 0 || !field) {
-			throw new Exeption();
+			throw new ReedSolomonException();
 		}
 		this.field = field;
 		const coefficientsLength = coefficients.length;
