@@ -40,6 +40,7 @@ https://ryunosinfx.github.io/reedsolomon.es/index.html
   // N = encordedUint8Array.length
   const encordedUint8Array = new Uint8Array([yyyyyyyyyyyyyyyyyyyyyyy]); 
    
+  // If you use ByteAs10bit,ByteAs12bit,ByteAs14bit. Then add [0] byte add satisfaction bit num by LCM;
   
   // Best effort mode:if errors are correctable,they are corrected.
   // But errors are not correctable,they are outputed.
