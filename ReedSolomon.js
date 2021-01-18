@@ -839,7 +839,10 @@ export class ReedSolomonES {
 			const tempN = wordKCurrent + errorCorrectionRedundantUnitCount;
 			leftLength -= wordK;
 			const start = i * wordK;
-			const end = start + wordKCurrent;
+			if (start > newDataLength || wordKCurrent < retio) {
+				break;
+			}
+			const end = start + wordKCurrent > newDataLength ? newDataLength : start + wordKCurrent;
 			const toEncode = new Int32Array(tempN);
 			toEncode.fill(0);
 			toEncode.set(i32a.slice(start, end), 0);
@@ -881,10 +884,13 @@ export class ReedSolomonES {
 			const tempN = wordKCurrent + errorCorrectionRedundantUnitCount;
 			leftLength -= wordKCurrent;
 			const start = i * tempN;
-			const end = start + tempN;
+			const end = start + tempN > newDataLength ? newDataLength : start + tempN;
 			const toDecode = new Int32Array(tempN);
 			const na = i32a.slice(start, end);
 			console.log('i:' + i + '/na:' + na.length + '/tempN:' + tempN);
+			if (na.length < 1) {
+				break;
+			}
 			toDecode.set(na, 0);
 			const decorded = ReedSolomonES.decodeRaw(toDecode, errorCorrectionRedundantUnitCount, primitive, bitNum, b, isSloppy);
 			const offset = wordK * i;
