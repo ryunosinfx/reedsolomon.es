@@ -858,6 +858,9 @@ export class ReedSolomonES {
 		// console.log('encode presetName:' + presetName + '/preset:' + JSON.stringify(preset));
 		return ReedSolomonES.copyToU8a(result, bitNum);
 	}
+	static decodeStrict(u8a, presetName, errorCorrectionRetio) {
+		return ReedSolomonES.decode(u8a, presetName, errorCorrectionRetio, false);
+	}
 	static decode(u8a, presetName, errorCorrectionRetio, isSloppy) {
 		const preset = presets[presetName];
 		if (!preset) {
