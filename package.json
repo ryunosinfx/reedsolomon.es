@@ -1,6 +1,6 @@
 {
   "name": "reedsolomon.es",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This is Reed-Solomon coding module which is porting from Zxing open source project written in Java.",
   "main": "index.js",
   "scripts": {
