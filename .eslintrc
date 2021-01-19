@@ -5,6 +5,7 @@
 		"browser": true,
 		"node": false
 	},
+	"parser": "babel-eslint",
 	"rules": {
 		// "prettier/prettier": [1, { "trailingComma": "es6", "singleQuote": true, "semi": true }],
 		"curly": 0,
@@ -33,9 +34,6 @@
 		"ecmaVersion": 2017
 	},
 	"plugins": [],
-	"ecmaFeatures": {
-		"arrowFunctions": true
-	},
     "globals": {
         "o": "writable",
         "var2": "readonly"
