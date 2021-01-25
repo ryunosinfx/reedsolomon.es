@@ -10,7 +10,8 @@ https://ryunosinfx.github.io/reedsolomon.es/index.html
 
 ## encode 
 ```EJS
-<script type="module" src="./ReedSolomon.js">
+<script type="module" src="./ReedSolomon.js"></script>
+<script type="module">
 import { ReedSolomonES } from './ReedSolomon.js';
   // t=(N-K)/2 (ByteAs8bit:max 0.97)
   const errorCrrectionReduntantRetio = 0.97;
@@ -29,7 +30,8 @@ import { ReedSolomonES } from './ReedSolomon.js';
 ```
 ## decode 
 ```EJS
-<script type="module" src="./ReedSolomon.js">
+<script type="module" src="./ReedSolomon.js"></script>
+<script type="module">
 import { ReedSolomonES } from './ReedSolomon.js';
   // t=(N-K)/2 (ByteAs8bit:max 0.97).
   // It is must same setting on encording.
